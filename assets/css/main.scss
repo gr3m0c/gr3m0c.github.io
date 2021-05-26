@@ -7,6 +7,4 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
 
-#main {
-  max-width: 100%;
-}
+$max-width:1920px;
