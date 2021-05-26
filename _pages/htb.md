@@ -2,7 +2,6 @@
 title:  "HackTheBox Writeups"
 layout: single
 permalink: /htb/
-author_profile: true
 ---
 
 # Collection HackTheBox writeups
