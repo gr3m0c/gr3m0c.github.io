@@ -190,6 +190,7 @@ incremental: false
 
 # Markdown Processing
 kramdown:
+  line_width: 150
   input: GFM
   hard_wrap: false
   auto_ids: true
