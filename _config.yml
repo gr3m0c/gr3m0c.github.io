@@ -16,12 +16,12 @@ minimal_mistakes_skin    : "neon" # "air", "aqua", "contrast", "dark", "dirt", "
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Gr3m0c's Blog"
+title                    : "Sm1l3z's Asylum"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
-name                     : "gr3m0c"
+name                     : "Sm1l3z"
 description              : "HackTheBox and CTF writeups"
-url                      : "https://gr3m0c.github.io/"
+url                      : "https://sm1l3z.github.io/"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : 
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -94,7 +94,7 @@ analytics:
 
 # Site Author
 author:
-  name             : "gr3m0c"
+  name             : "Sm1l3z"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "CTF-Player"
   location         : "Europe"
