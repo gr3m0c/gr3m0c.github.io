@@ -1,6 +1,6 @@
 ---
 title:  "HackTheBox Writeups"
-layout: single
+layout: home
 permalink: /htb/
 author_profile: true
 ---
