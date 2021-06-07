@@ -233,7 +233,7 @@ social_icons:
 
 # Sidebar Avatar
 # in directory: /assets/images/avatar.gif
-avatar:/img/sm1l3z.png
+avatar: /img/sm1l3z.png
 
 
 # Table Of Contents in the Sidebar
