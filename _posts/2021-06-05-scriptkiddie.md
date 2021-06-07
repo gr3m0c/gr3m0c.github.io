@@ -1,6 +1,6 @@
 ---
 title:     "Hack The Box - ScriptKiddie"
-tags: [linux,easy]
+tags: [linux,easy,metasploit,command injection,sudo]
 categories: HackTheBox
 ---
 [![box card](/img/scriptkiddie/info_card.png)](/img/scriptkiddie/info_card.png)
