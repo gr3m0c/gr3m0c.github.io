@@ -1,14 +1,9 @@
 ---
-layout:  single
-title:   "ScriptKiddie"
-date:    2021-05-26
-toc: true
-toc_sticky: true
-author_profile: true
+title:     "Hack The Box - ScriptKiddie"
+tags: [linux,easy]
+categories: HackTheBox
 ---
-{:refdef: style="text-align: center;"}
-[![box card](/assets/images/scriptkiddie/info_card.png)](/assets/images/scriptkiddie/info_card.png)
-{: refdef}
+[![box card](/img/scriptkiddie/info_card.png)](/img/scriptkiddie/info_card.png)
 
 ScriptKiddie is an easy rated machine on HackTheBox by [0xdf](https://www.hackthebox.eu/home/users/profile/4935). For the user part we will exploit a web application that let's us generate mfsvenom files with templates abusing [CVE-2020-7384](https://www.rapid7.com/db/modules/exploit/unix/fileformat/metasploit_msfvenom_apk_template_cmd_injection/). This gives us a shell as the user `kid`, from whom we pivot to the user `pwn` abusing a running cronjob with another command injection. As `pwn` we can run `msfconsole` as root,  which let's us drop into a rootshell executing bash.
 
@@ -57,9 +52,7 @@ Nmap done: 1 IP address (1 host up) scanned in 8.21 seconds
 ## Msfvenom template
 Going over to the werbserver on port 5000 we can see that it is offering 3 different applications.
 
-{:refdef: style="text-align: center;"}
-[![website](/assets/images/scriptkiddie/website.png)](/assets/images/scriptkiddie/website.png)
-{: refdef}
+[![website](/img/scriptkiddie/website.png)](/img/scriptkiddie/website.png)
 
 We can scan a host with nmap entering an ip, generate `msfvenom` payloads with templates and also perform a `searchsploit` search. Scanning localhost with the nmap service we don't get any additional information. The interesting thing here is the payload generation with a template because it is vulnerable to [CVE-2020-7384](https://www.rapid7.com/db/modules/exploit/unix/fileformat/metasploit_msfvenom_apk_template_cmd_injection/).
 This works by exploiting a command injection vulnerability in msfvenom when generating an `apk` payload with a template file.
@@ -98,9 +91,7 @@ Ncat: Listening on 0.0.0.0:7575
 
 With preparations set we can now generate the `msfvenom` payload with our malicious `apk` template.
 
-{:refdef: style="text-align: center;"}
-[![payload_web](/assets/images/scriptkiddie/payload_web.png)](/assets/images/scriptkiddie/payload_web.png)
-{: refdef}
+[![payload_web](/img/scriptkiddie/payload_web.png)](/img/scriptkiddie/payload_web.png)
 
 After a short moment we get a hit back on our `ncat` listener and upgrade the shell. Now we can grab the user flag in `/home/kid`.
 
