@@ -688,7 +688,6 @@ PS C:\Development> cp .\Krypter_Linux y:
 Looking at the binary in ghidra we see port `1234` mentioned and that a valid query is structured like `method=select&username=administrator&table=passwords`.
 
 [![ghidra_krypter.png](/img/breadcrumbs/ghidra_krypter.png)](/img/breadcrumbs/ghidra_krypter.png)
-![[ghidra_krypter.png]]
 
 Checking open ports on the machine we see that port 1234 is indeed listening on localhost of the machine.
 
@@ -772,7 +771,7 @@ There are multiple ways to decrypt it, one of the easiest is using cyberchef. We
 https://gchq.github.io/CyberChef/#recipe=From_Base64('A-Za-z0-9%2B/%3D',true)AES_Decrypt(%7B'option':'Latin1','string':'k19D193j.%3C19391('%7D,%7B'option':'Hex','string':'0000000000000000000000000000000'%7D,'CBC','Raw','Raw',%7B'option':'Hex','string':''%7D,%7B'option':'Hex','string':''%7D)&input=SDJkRnovak53dFNUV0RVUm90OUpCaFdNUDZYT2RtY3BncXZZSEczNVFLdz0
 ```
 
-![[cyberchef.png]]
+[![cyberchef.png](/img/breadcrumbs/cyberchef.png)](/img/breadcrumbs/cyberchef.png)
 
 The password indeed works and we can log into the machine as the administrator user. Now we are able to add the `root.txt` from the administrators desktop to our collection
 
