@@ -16,31 +16,8 @@ As usual we start our enumeration off with a nmap scan against all ports, follow
 
 `All ports`
 ```
-$ sudo nmap -p- -v -T4 10.129.175.242 
+$ sudo nmap -p- -T4 10.129.175.242 
 Starting Nmap 7.91 ( https://nmap.org ) at 2021-07-17 08:06 BST
-Initiating Ping Scan at 08:06
-Scanning 10.129.175.242 [4 ports]
-Completed Ping Scan at 08:06, 0.13s elapsed (1 total hosts)
-Initiating Parallel DNS resolution of 1 host. at 08:06
-Completed Parallel DNS resolution of 1 host. at 08:06, 0.00s elapsed
-Initiating SYN Stealth Scan at 08:06
-Scanning 10.129.175.242 [65535 ports]
-Discovered open port 445/tcp on 10.129.175.242
-Discovered open port 135/tcp on 10.129.175.242
-Discovered open port 80/tcp on 10.129.175.242
-Discovered open port 443/tcp on 10.129.175.242
-Discovered open port 139/tcp on 10.129.175.242
-Discovered open port 22/tcp on 10.129.175.242
-Discovered open port 3306/tcp on 10.129.175.242
-Discovered open port 49664/tcp on 10.129.175.242
-Discovered open port 49665/tcp on 10.129.175.242
-Discovered open port 5040/tcp on 10.129.175.242
-Discovered open port 49668/tcp on 10.129.175.242
-Discovered open port 49666/tcp on 10.129.175.242
-Discovered open port 49667/tcp on 10.129.175.242
-Discovered open port 7680/tcp on 10.129.175.242
-Discovered open port 49669/tcp on 10.129.175.242
-Completed SYN Stealth Scan at 08:07, 59.34s elapsed (65535 total ports)
 Nmap scan report for 10.129.175.242
 Host is up (0.12s latency).
 Not shown: 65520 closed ports
@@ -436,7 +413,7 @@ The error message could mean that our web shell got filtered by some blacklist s
 
 [![upload_success.png](/img/breadcrumbs/upload_success.png)](/img/breadcrumbs/upload_success.png)
 
-This time it worked and our webshell get uploaded. Opening it up in the browser with the command `whoami` we see we have code execution and can start working on a reverse shell.
+This time it worked and our webshell gets uploaded. Opening it up in the browser with the command `whoami` we see we have code execution and can start working on a reverse shell.
 
 [![rce_poc.png](/img/breadcrumbs/rce_poc.png)](/img/breadcrumbs/rce_poc.png)
 
@@ -563,7 +540,7 @@ juliette@BREADCRUMBS C:\Users\juliette\Desktop>dir
 
 ## Sticky notes
 
-There is also a `todo.html` in her desktop. The todo list states she plans on moving her passwords from sticky notes into a password manger, which mean there should be currently more passwords in a sticky note on her desktop.
+There is also a `todo.html` in her desktop. The todo list states she plans on moving her passwords from sticky notes into a password manager, which means there should be currently more passwords in a sticky note on her desktop.
 
 ```
 juliette@BREADCRUMBS C:\Users\juliette\Desktop>type todo.html
@@ -624,7 +601,7 @@ juliette@BREADCRUMBS C:\Users\juliette\AppData\Local\Packages\Microsoft.Microsof
                2 Dir(s)   6,482,231,296 bytes free
 ```
 
-We could download this and open the sqlite database but for simplicty and since it is stored in plaintext we simply switch to powershell in the SSH shell and cat the content to the screen. 
+We could download this and open the sqlite database but for simplicty and since it is stored in plaintext, we simply switch to powershell in the SSH shell and cat the content to the screen. 
 Right at the bottom we see the credentials for the development account `development:fN3)sN5Ee@g`. The administrator account is also mentioned but there are no credentials present for it.
 
 ```
@@ -773,7 +750,7 @@ https://gchq.github.io/CyberChef/#recipe=From_Base64('A-Za-z0-9%2B/%3D',true)AES
 
 [![cyberchef.png](/img/breadcrumbs/cyberchef.png)](/img/breadcrumbs/cyberchef.png)
 
-The password indeed works and we can log into the machine as the administrator user. Now we are able to add the `root.txt` from the administrators desktop to our collection
+The password indeed works and we can log into the machine as the administrator user. Now we are able to add the `root.txt` from the administrators desktop to our collection.
 
 ```
 $ssh administrator@10.129.175.242
