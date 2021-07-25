@@ -55,7 +55,7 @@ Nmap done: 1 IP address (1 host up) scanned in 10.10 seconds\
 
 # Drupalgeddon
 
-There are only two ports open on the target with http being a significantly larger attack surface than ssh, hence we will start there. Browsing to it in our browser we see a login interface where the source reveleals it is running drupal 7.
+There are only two ports open on the target with http being a significantly larger attack surface than ssh, hence we will start there. Browsing to it in our browser we see a login interface where the source reveals it is running drupal 7.
 
 [![home](/img/armageddon/home.png)](/img/armageddon/home.png)
 
@@ -89,7 +89,7 @@ meterpreter >
 
 # Database credentials
 
-Drupal often stores the database crednetials in a `settings.php` file which is also the case here.
+Drupal often stores the database credentials in a `settings.php` file which is also the case here.
 
 ```
 meterpreter > shell
@@ -120,7 +120,7 @@ $databases = array (
 ...[snip]...
 ```
 
-Since we can neither use python nor script getting a real shell is hard so we use the `-e` in mysql to get information from the database.  Looking through the database as drupaluser we find the hashed password for brucetherealadmin using the drupal database in the users table.
+Since we can neither use python nor script, getting a real shell is hard. So we use the `-e` in mysql to get information from the database.  Looking through the database as drupaluser we find the hashed password for brucetherealadmin using the drupal database in the users table.
 
 ```
 mysql -u"drupaluser" -p"CQHEy@9M*m23gBVj" -e "show databases;"
