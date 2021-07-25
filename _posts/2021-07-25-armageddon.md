@@ -5,7 +5,7 @@ categories: HackTheBox
 ---
 [![info_card](/img/armageddon/info_card.png)](/img/armageddon/info_card.png)
 
-Armageddon is an easy rated machin one HackTheBox created by [bertolis](https://www.hackthebox.eu/home/users/profile/27897). For the user part we will abuse CVE-2018-7600 aka Drupalgeddon2. After gaining a foothold we will find the database credentials from drupal's `settings.php` file. Cracking the hash in the database we can ssh in as the user brucetherealadmin. Bruce is allowed to install any snap package with root permission, which gives us an easy root modifying the `dirty_socks` exploit.
+Armageddon is an easy rated machine on HackTheBox created by [bertolis](https://www.hackthebox.eu/home/users/profile/27897). For the user part we will abuse CVE-2018-7600 aka Drupalgeddon2. After gaining a foothold we will find the database credentials from drupal's `settings.php` file. Cracking the hash in the database we can ssh in as the user brucetherealadmin. Bruce is allowed to install any snap package with root permissions, which gives us an easy root modifying the `dirty_socks` exploit.
 
 # User
 ## Nmap
