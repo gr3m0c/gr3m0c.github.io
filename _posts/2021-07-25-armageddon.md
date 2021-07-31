@@ -53,7 +53,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 10.10 seconds\
 ```
 
-# Drupalgeddon
+## Drupalgeddon
 
 There are only two ports open on the target with http being a significantly larger attack surface than ssh, hence we will start there. Browsing to it in our browser we see a login interface where the source reveals it is running drupal 7.
 
@@ -87,7 +87,7 @@ msf6 exploit(unix/webapp/drupal_drupalgeddon2) > run
 meterpreter >
 ```
 
-# Database credentials
+## Database credentials
 
 Drupal often stores the database credentials in a `settings.php` file which is also the case here.
 
