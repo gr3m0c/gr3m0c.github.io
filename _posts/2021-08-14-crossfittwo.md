@@ -932,7 +932,7 @@ on></div>
 ...[snip]...
 ```
 
-After about a minute we see another dns request in wireshark which seems to come from the user clicking on the reset link. This request now get's resolved to our ip.
+After about a minute we see another dns request in wireshark which seems to come from the user clicking on the reset link. This request now gets resolved to our ip.
 
 [![wireshark_triple](/img/crossfittwo/wireshark_triple.png)](/img/crossfittwo/wireshark_triple.png)
 
@@ -1298,7 +1298,7 @@ Opening it up in ghidra and looking at the main function we see a comparison bei
 
 [![ghidra_restrict](/img/crossfittwo/ghidra_restrict.png)](/img/crossfittwo/ghidra_restrict.png)
 
-Testing it on a log file in `/var` we see it indeed retrives the file.
+Testing it on a log file in `/var` we see it indeed retrieves the file.
 
 ```
 crossfit2$ log /var/log/security.out
