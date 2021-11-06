@@ -252,15 +252,15 @@ Going over to the `NETLOGON` share we see a `HelpDesk` folder which we can downl
 ```
 $ smbclient  //10.129.143.192/NETLOGON -U kaorz%Roper4155
 Try "help" to get a list of possible commands.
-smb: \ > ls
+smb: \> ls
   .                                   D        0  Sat Aug  8 10:42:28 2020
   ..                                  D        0  Sat Aug  8 10:42:28 2020
   HelpDesk                            D        0  Sun Aug  9 15:40:36 2020
 
                 7779839 blocks of size 4096. 3483106 blocks available
-smb: \ > prompt off
-smb: \ > recurse on
-smb: \ > mget *
+smb: \> prompt off
+smb: \> recurse on
+smb: \> mget *
 getting file \HelpDesk\Restart-OracleService.exe of size 1854976 as HelpDesk/Restart-OracleService.exe (4333.7 KiloBytes/sec) (average 4333.7 KiloBytes/sec)
 getting file \HelpDesk\Server MSSQL.msg of size 24576 as HelpDesk/Server MSSQL.msg (184.6 KiloBytes/sec) (average 3349.5 KiloBytes/sec)
 getting file \HelpDesk\WinRM Service.msg of size 26112 as HelpDesk/WinRM Service.msg (194.7 KiloBytes/sec) (average 2740.8 KiloBytes/sec)
