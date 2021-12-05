@@ -346,7 +346,7 @@ getting file \downdetector.ps1 of size 1046 as downdetector.ps1 (8.0 KiloBytes/s
 
 The script checks all DNS records for ones that starts with `web` and uses `Invoke-WebRequest` with default credentials on them. If the server does not respond it sends an email to ted stating the host is down. If we can add a DNS entry for our ip address starting with `web` we can possibly exfiltrate the hash with responder.
 
-```ps1
+```sh
 # Check web server status. Scheduled to run every 5min
 Import-Module ActiveDirectory
 foreach($record in Get-ChildItem "AD:DC=intelligence.htb,CN=MicrosoftDNS,DC=DomainDnsZones,DC=intelligence,DC=htb" | Where-Object Name -like "web*")  {
